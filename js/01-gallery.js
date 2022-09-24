@@ -1,54 +1,59 @@
-import { galleryItems } from './gallery-items.js';
+import { galleryItems } from "./gallery-items.js";
 console.log(galleryItems);
 
 let images = galleryItems;
 let instance = {};
-const gallery = document.querySelector('.gallery');
+const gallery = document.querySelector(".gallery");
 
-const markup = images.reduce((acc, item) => acc + `<div class="gallery__item">
-<a class="gallery__link" href="${item.original}">
+const markup = images.reduce(
+  (acc, { preview, original, description } = item) =>
+    acc +
+    `<div class="gallery__item">
+<a class="gallery__link" href="${original}">
   <img
     class="gallery__image"
-    src="${item.preview}"
-    data-source="${item.original}"
-    alt="${item.description}"
+    src="${preview}"
+    data-source="${original}"
+    alt="${description}"
   />
 </a>
-</div>`, "");
+</div>`,
+  ""
+);
 
-gallery.insertAdjacentHTML('beforeend', markup);
-gallery.addEventListener('click', handleItemClick)
+gallery.insertAdjacentHTML("beforeend", markup);
+gallery.addEventListener("click", handleItemClick);
 
 function handleItemClick(evt) {
-    evt.preventDefault();
+  evt.preventDefault();
 
-    if(evt.target === evt.currentTarget) {return};
+  if (evt.target === evt.currentTarget) {
+    return;
+  }
 
-    const img = evt.target;
+  const img = evt.target;
 
-   instance = basicLightbox.create(`
+  instance = basicLightbox.create(`
     <div class="modal">
     <img
     class="gallery__image"
     src="${img.dataset.source}"
   />
     </div>
-`)
-instance.show()
+`);
+  instance.show();
 
+  const modal = document.querySelector(".modal");
+  modal.addEventListener("click", closeModal);
+  function closeModal() {
+    instance.close();
+  }
 
-const modal = document.querySelector('.modal');
-modal.addEventListener('click', closeModal);
-function closeModal() {
-    instance.close()
-}
-
-
-document.addEventListener("keyup", closeModalEsc);
-function closeModalEsc(evt) {
-    if (evt.code === 'Escape') {
-        closeModal()
+  document.addEventListener("keyup", closeModalEsc);
+  function closeModalEsc(evt) {
+    console.log(evt);
+    if (evt.code === "Escape") {
+      closeModal();
     }
+  }
 }
-}
-
